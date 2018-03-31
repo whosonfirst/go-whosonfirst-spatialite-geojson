@@ -72,7 +72,7 @@ Let's say that you've indexed the
 repo like this:
 
 ```
-./bin/wof-sqlite-index-geojson -dsn test.db -mode repo -timings /usr/local/data/whosonfirst-data-constituency-ca/
+./bin/wof-sqlite-index-geojson -dsn test.db -mode repo /usr/local/data/whosonfirst-data-constituency-ca/
 ```
 
 You might then query the data (in a Go program or anything else that can talk to SQLite) like this:
@@ -101,6 +101,12 @@ func main (){
         log.Println(eb)
 }
 ```
+
+## Modes
+
+This package can index any input source supported by the
+[go-whosonfirst-index](https://github.com/whosonfirst/go-whosonfirst-index#modes)
+package.
 
 ## Performance
 

@@ -1,8 +1,8 @@
 package tables
 
 import (
-       "errors"
-       "encoding/json"
+	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/tidwall/gjson"
 	"github.com/twpayne/go-geom"

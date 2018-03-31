@@ -20,11 +20,11 @@ func main() {
 	valid_modes := strings.Join(wof_index.Modes(), ",")
 	desc_modes := fmt.Sprintf("The mode to use importing data. Valid modes are: %s.", valid_modes)
 
-	dsn := flag.String("dsn", ":memory:", "")
-
 	mode := flag.String("mode", "files", desc_modes)
 
-	all := flag.Bool("all", false, "Index all tables (except the 'search' and 'geometries' tables which you need to specify explicitly)")
+	dsn := flag.String("dsn", ":memory:", "")
+
+	all := flag.Bool("all", false, "Index all tables")
 	geojson := flag.Bool("geojson", true, "Index the 'geojson' table")
 	live_hard := flag.Bool("live-hard-die-fast", true, "Enable various performance-related pragmas at the expense of possible (unlikely) database corruption")
 	timings := flag.Bool("timings", false, "Display timings during and after indexing")

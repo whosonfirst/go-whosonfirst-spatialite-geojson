@@ -120,3 +120,4 @@ datasets where the extra cost doesn't matter.
 * https://sqlite.org/
 * https://www.sqlite.org/json1.html
 * https://www.gaia-gis.it/fossil/libspatialite/index
+* https://github.com/whosonfirst/go-whosonfirst-sqlite

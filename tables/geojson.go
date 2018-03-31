@@ -54,7 +54,7 @@ func (t *GeoJSONTable) Name() string {
 func (t *GeoJSONTable) Schema() string {
 
 	sql := `CREATE TABLE %s (
-		id INTEGER NOT NULL PRIMARY KEY,
+		id TEXT NOT NULL PRIMARY KEY,
 		properties JSON
 	);
 

@@ -102,6 +102,8 @@ func main (){
 }
 ```
 
+_Error handling has been removed for the sake of brevity._
+
 ## Modes
 
 This package can index any input source supported by the

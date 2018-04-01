@@ -23,8 +23,8 @@ CREATE TABLE geojson (
 );
 
 SELECT InitSpatialMetaData();
-SELECT AddGeometryColumn('geojson', 'geom', 4326, 'GEOMETRY', 'XY');
-SELECT CreateSpatialIndex('geojson', 'geom');
+SELECT AddGeometryColumn('geojson', 'geometry', 4326, 'GEOMETRY', 'XY');
+SELECT CreateSpatialIndex('geojson', 'geometry');
 
 ```
 

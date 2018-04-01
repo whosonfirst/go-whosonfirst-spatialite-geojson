@@ -59,8 +59,8 @@ func (t *GeoJSONTable) Schema() string {
 	);
 
 	SELECT InitSpatialMetaData();
-	SELECT AddGeometryColumn('%s', 'geom', 4326, 'GEOMETRY', 'XY');
-	SELECT CreateSpatialIndex('%s', 'geom');
+	SELECT AddGeometryColumn('%s', 'geometry', 4326, 'GEOMETRY', 'XY');
+	SELECT CreateSpatialIndex('%s', 'geometry');
 	`
 
 	return fmt.Sprintf(sql, t.Name(), t.Name(), t.Name())
@@ -134,7 +134,7 @@ func (t *GeoJSONTable) IndexFeature(db sqlite.Database, f wof_geojson.Feature) e
 	}
 
 	sql := fmt.Sprintf(`INSERT OR REPLACE INTO %s (
-		id, properties, geom
+		id, properties, geometry
 	) VALUES (
 		?, ?, GeomFromText('%s', 4326)
 	)`, t.Name(), str_wkt)

@@ -1,5 +1,15 @@
 package http
 
+/*
+
+curl -s 'localhost:9999/nearby?latitude=37.617342&longitude=-122.382932&property=wof:placetype%3Dvenue&radius=50' | jq '.features [].properties["wof:name"] '
+"D-12 Wall Case"
+"D59"
+"Restroom Women's (Boarding Area D Terminal 2)"
+"Every Beating Second "
+
+*/
+
 import (
 	"encoding/json"
 	"fmt"
@@ -16,52 +26,18 @@ func NearbyHandler(db *database.SQLiteDatabase) (gohttp.Handler, error) {
 
 	fn := func(rsp gohttp.ResponseWriter, req *gohttp.Request) {
 
+		coord, err := CoordFromQuery(req)
+
+		if err != nil {
+			gohttp.Error(rsp, err.Error(), gohttp.StatusBadRequest)
+			return
+		}
+
 		opts := sanitize.DefaultOptions()
 
 		http_query := req.URL.Query()
 
-		raw_lat := http_query.Get("latitude")
-		raw_lon := http_query.Get("longitude")
-
-		str_lat, err := sanitize.SanitizeString(raw_lat, opts)
-
-		if err != nil {
-			gohttp.Error(rsp, "Invalid latitude", gohttp.StatusBadRequest)
-			return
-		}
-
-		if str_lat == "" {
-			gohttp.Error(rsp, "Missing latitude", gohttp.StatusBadRequest)
-			return
-		}
-
-		str_lon, err := sanitize.SanitizeString(raw_lon, opts)
-
-		if err != nil {
-			gohttp.Error(rsp, "Invalid longitude", gohttp.StatusBadRequest)
-			return
-		}
-
-		if str_lon == "" {
-			gohttp.Error(rsp, "Missing longitude", gohttp.StatusBadRequest)
-			return
-		}
-
-		lat, err := strconv.ParseFloat(str_lat, 10)
-
-		if err != nil {
-			gohttp.Error(rsp, "Invalid latitude", gohttp.StatusBadRequest)
-			return
-		}
-
-		lon, err := strconv.ParseFloat(str_lon, 10)
-
-		if err != nil {
-			gohttp.Error(rsp, "Invalid longitude", gohttp.StatusBadRequest)
-			return
-		}
-
-		radius := 200
+		radius := 200.0
 
 		raw_radius := http_query.Get("radius")
 
@@ -74,36 +50,39 @@ func NearbyHandler(db *database.SQLiteDatabase) (gohttp.Handler, error) {
 
 		if str_radius != "" {
 
-			int_radius, err := strconv.Atoi(str_radius)
+			fl_radius, err := strconv.ParseFloat(str_radius, 10)
 
 			if err != nil {
 				gohttp.Error(rsp, "Invalid radius", gohttp.StatusBadRequest)
 				return
 			}
 
-			if int_radius > 1000 || int_radius < 0 {
+			if fl_radius > 1000.0 || fl_radius < 0.0 {
 				gohttp.Error(rsp, "Invalid radius", gohttp.StatusBadRequest)
 				return
 			}
 
-			radius = int_radius
+			radius = fl_radius
 		}
 
-		pt := fmt.Sprintf("POINT(%0.6f %0.6f)", lon, lat)
+		// because this
+		// https://stackoverflow.com/questions/8287769/what-unit-is-does-spatialites-distance-function-return
+
+		radius = radius / 111120.0
+
+		pt := fmt.Sprintf("POINT(%0.6f %0.6f)", coord.Longitude, coord.Latitude)
 
 		q := fmt.Sprintf(`SELECT id, properties, AsGeoJSON(geometry) FROM geojson WHERE
 			PtDistWithin(
-				ST_Centroid(geometry),
 				ST_GeomFromText('%s'),
-				%d)`, pt, radius)
+				ST_Centroid(geometry),
+				%f)`, pt, radius)
 
 		args := make([]interface{}, 0)
 
 		props, ok := http_query["property"]
 
 		if ok {
-
-			log.Println("PROPS", props)
 
 			for _, raw_prop := range props {
 
@@ -125,8 +104,6 @@ func NearbyHandler(db *database.SQLiteDatabase) (gohttp.Handler, error) {
 				v := parts[1]
 
 				q = fmt.Sprintf("%s AND json_extract(properties, '$.%s') = ?", q, k)
-				log.Println("Q", q)
-
 				args = append(args, v)
 			}
 		}
@@ -137,6 +114,8 @@ func NearbyHandler(db *database.SQLiteDatabase) (gohttp.Handler, error) {
 			gohttp.Error(rsp, err.Error(), gohttp.StatusInternalServerError)
 			return
 		}
+
+		log.Println(q, args)
 
 		fc, err := query.QueryToFeatureCollection(conn, q, args...)
 

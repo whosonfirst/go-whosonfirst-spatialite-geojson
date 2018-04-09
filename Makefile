@@ -7,6 +7,7 @@ prep:
 self:   prep rmdeps
 	if test -d src/github.com/whosonfirst/go-whosonfirst-sqlite-geojson; then rm -rf src/github.com/whosonfirst/go-whosonfirst-sqlite-geojson; fi
 	mkdir -p src/github.com/whosonfirst/go-whosonfirst-sqlite-geojson
+	cp -r http src/github.com/whosonfirst/go-whosonfirst-sqlite-geojson/
 	cp -r index src/github.com/whosonfirst/go-whosonfirst-sqlite-geojson/
 	cp -r query src/github.com/whosonfirst/go-whosonfirst-sqlite-geojson/
 	cp -r tables src/github.com/whosonfirst/go-whosonfirst-sqlite-geojson/
@@ -48,6 +49,7 @@ vendor-deps: rmdeps deps
 
 fmt:
 	go fmt cmd/*.go
+	go fmt http/*.go
 	go fmt index/*.go
 	go fmt query/*.go
 	go fmt tables/*.go
@@ -60,3 +62,4 @@ bin: 	self
 	rm -rf bin/*
 	@GOPATH=$(GOPATH) go build --tags json1 -o bin/wof-sqlite-index-geojson cmd/wof-sqlite-index-geojson.go
 	@GOPATH=$(GOPATH) go build --tags json1 -o bin/wof-sqlite-query-geojson cmd/wof-sqlite-query-geojson.go
+	@GOPATH=$(GOPATH) go build --tags json1 -o bin/wof-sqlite-geojson-server cmd/wof-sqlite-geojson-server.go

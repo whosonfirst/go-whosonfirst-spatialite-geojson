@@ -44,7 +44,7 @@ func NewDefaultSQLiteFeaturesIndexer(db sqlite.Database, to_index []sqlite.Table
 			// HACK - see above
 			closer := Closer{fh}
 
-			i, err := feature.LoadWOFFeatureFromReader(closer)
+			i, err := feature.LoadFeatureFromReader(closer)
 
 			if err != nil {
 				msg := fmt.Sprintf("Unable to load %s, because %s", path, err)

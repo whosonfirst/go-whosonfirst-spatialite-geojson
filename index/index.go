@@ -8,7 +8,10 @@ import (
 	wof_index "github.com/whosonfirst/go-whosonfirst-index"
 	"github.com/whosonfirst/go-whosonfirst-sqlite"
 	sql_index "github.com/whosonfirst/go-whosonfirst-sqlite/index"
+	"github.com/whosonfirst/warning"
 	"io"
+	"log"
+	"path/filepath"
 )
 
 // THIS IS A TOTAL HACK UNTIL WE CAN SORT THINGS OUT IN
@@ -41,14 +44,26 @@ func NewDefaultSQLiteFeaturesIndexer(db sqlite.Database, to_index []sqlite.Table
 				return nil, err
 			}
 
+			ext := filepath.Ext(path)
+
+			if ext != ".geojson" {
+				return nil, nil
+			}
+
 			// HACK - see above
 			closer := Closer{fh}
 
 			i, err := feature.LoadFeatureFromReader(closer)
 
 			if err != nil {
+
 				msg := fmt.Sprintf("Unable to load %s, because %s", path, err)
-				return nil, errors.New(msg)
+
+				if warning.IsWarning(err) {
+					log.Println(err)
+				} else {
+					return nil, errors.New(msg)
+				}
 			}
 
 			return i, nil

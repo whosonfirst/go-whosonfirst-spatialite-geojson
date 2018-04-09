@@ -2,7 +2,6 @@ package feature
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/skelterjohn/geom"
 	"github.com/whosonfirst/go-whosonfirst-flags"
 	"github.com/whosonfirst/go-whosonfirst-flags/existential"
@@ -13,6 +12,7 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-placetypes"
 	"github.com/whosonfirst/go-whosonfirst-spr"
 	"github.com/whosonfirst/go-whosonfirst-uri"
+	"github.com/whosonfirst/warning"
 	"strconv"
 )
 
@@ -96,7 +96,7 @@ func EnsureWOFFeature(body []byte) error {
 	pt := utils.StringProperty(body, []string{"properties.wof:placetype"}, "")
 
 	if !placetypes.IsValidPlacetype(pt) {
-		return errors.New("Invalid wof:placetype")
+	   return warning.New("Invalid wof:placetype")
 	}
 
 	// check wof:repo here?

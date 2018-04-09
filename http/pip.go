@@ -1,27 +1,15 @@
 package http
 
-/*
-
-curl -s 'localhost:9999/nearby?latitude=37.617342&longitude=-122.382932&property=wof:placetype%3Dvenue&radius=50' | jq '.features [].properties["wof:name"] '
-"D-12 Wall Case"
-"D59"
-"Restroom Women's (Boarding Area D Terminal 2)"
-"Every Beating Second "
-
-*/
-
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/whosonfirst/go-sanitize"
 	"github.com/whosonfirst/go-whosonfirst-sqlite-geojson/query"
 	"github.com/whosonfirst/go-whosonfirst-sqlite/database"
 	"log"
 	gohttp "net/http"
-	"strconv"
 )
 
-func NearbyHandler(db *database.SQLiteDatabase) (gohttp.Handler, error) {
+func PointInPolygonHandler(db *database.SQLiteDatabase) (gohttp.Handler, error) {
 
 	fn := func(rsp gohttp.ResponseWriter, req *gohttp.Request) {
 
@@ -32,50 +20,13 @@ func NearbyHandler(db *database.SQLiteDatabase) (gohttp.Handler, error) {
 			return
 		}
 
-		opts := sanitize.DefaultOptions()
-
-		http_query := req.URL.Query()
-
-		distance := 50.0
-
-		raw_distance := http_query.Get("distance")
-
-		str_distance, err := sanitize.SanitizeString(raw_distance, opts)
-
-		if err != nil {
-			gohttp.Error(rsp, "Invalid distance", gohttp.StatusBadRequest)
-			return
-		}
-
-		if str_distance != "" {
-
-			fl_distance, err := strconv.ParseFloat(str_distance, 10)
-
-			if err != nil {
-				gohttp.Error(rsp, "Invalid distance", gohttp.StatusBadRequest)
-				return
-			}
-
-			if fl_distance > 1000.0 || fl_distance < 0.0 {
-				gohttp.Error(rsp, "Invalid distance", gohttp.StatusBadRequest)
-				return
-			}
-
-			distance = fl_distance
-		}
-
-		// because this
-		// https://stackoverflow.com/questions/8287769/what-unit-is-does-spatialites-distanceance-function-return
-
-		distance = distance / 111120.0
-
 		pt := fmt.Sprintf("POINT(%0.6f %0.6f)", coord.Longitude, coord.Latitude)
 
 		q := fmt.Sprintf(`SELECT id, properties, AsGeoJSON(geometry) FROM geojson WHERE
-			PtDistWithin(
-				ST_GeomFromText('%s'),
-				ST_Centroid(geometry),
-				%f)`, pt, distance)
+			Contains(
+				geometry,
+				ST_GeomFromText('%s')
+				)`, pt)
 
 		args := make([]interface{}, 0)
 

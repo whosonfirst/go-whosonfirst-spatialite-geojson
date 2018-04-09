@@ -30,7 +30,13 @@ func main() {
 		log.Fatal(err)
 	}
 
-	nearby_handler, err := http.NearbyHandler(db)
+ 	nearby_handler, err := http.NearbyHandler(db)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+ 	pip_handler, err := http.PointInPolygonHandler(db)
 
 	if err != nil {
 		log.Fatal(err)
@@ -40,6 +46,7 @@ func main() {
 
 	mux.Handle("/ping", ping_handler)
 	mux.Handle("/nearby", nearby_handler)
+	mux.Handle("/pip", pip_handler)
 
 	endpoint := fmt.Sprintf("%s:%d", *host, *port)
 	log.Printf("listening for requests on %s\n", endpoint)

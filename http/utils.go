@@ -2,14 +2,21 @@ package http
 
 import (
 	"errors"
+	"fmt"
 	"github.com/whosonfirst/go-sanitize"
 	gohttp "net/http"
 	"strconv"
+	"strings"
 )
 
 type Coord struct {
 	Latitude  float64
 	Longitude float64
+}
+
+type PropertiesFilter struct {
+	Filters []string
+	Args    []interface{}
 }
 
 func CoordFromQuery(req *gohttp.Request) (*Coord, error) {
@@ -92,4 +99,49 @@ func LongitudeFromQuery(req *gohttp.Request, param string) (float64, error) {
 	}
 
 	return lon, nil
+}
+
+func PropertiesFiltersFromQuery(req *gohttp.Request, param string) (*PropertiesFilter, error) {
+
+	opts := sanitize.DefaultOptions()
+	http_query := req.URL.Query()
+
+	props, ok := http_query["property"]
+
+	if !ok {
+		return nil, nil
+	}
+
+	filters := make([]string, 0)
+	args := make([]interface{}, 0)
+
+	for _, raw_prop := range props {
+
+		str_prop, err := sanitize.SanitizeString(raw_prop, opts)
+
+		if err != nil {
+			return nil, err
+		}
+
+		parts := strings.Split(str_prop, "=")
+
+		if len(parts) != 2 {
+			return nil, errors.New("Invalid property")
+		}
+
+		k := parts[0]
+		v := parts[1]
+
+		f := fmt.Sprintf("json_extract(properties, '$.%s') = ?", k)
+
+		filters = append(filters, f)
+		args = append(args, v)
+	}
+
+	p := PropertiesFilter{
+		Filters: filters,
+		Args:    args,
+	}
+
+	return &p, nil
 }

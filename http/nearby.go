@@ -93,8 +93,8 @@ func NearbyHandler(db *database.SQLiteDatabase) (gohttp.Handler, error) {
 
 		q := fmt.Sprintf(`SELECT id, properties, AsGeoJSON(geometry) FROM geojson WHERE
 			PtDistWithin(
-				ST_GeomFromText('%s'),
 				ST_Centroid(geometry),
+				ST_GeomFromText('%s'),
 				%d)`, pt, radius)
 
 		args := make([]interface{}, 0)

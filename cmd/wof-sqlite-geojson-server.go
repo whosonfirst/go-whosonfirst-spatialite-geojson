@@ -1,7 +1,7 @@
 package main
 
 import (
-       "flag"
+	"flag"
 	"fmt"
 	"github.com/whosonfirst/go-whosonfirst-sqlite-geojson/http"
 	"github.com/whosonfirst/go-whosonfirst-sqlite/database"

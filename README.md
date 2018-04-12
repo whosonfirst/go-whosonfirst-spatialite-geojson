@@ -30,7 +30,17 @@ SELECT CreateSpatialIndex('geojson', 'geometry');
 
 In order to index geometries you will need to have the [Spatialite extension](https://www.gaia-gis.it/fossil/libspatialite/index) already installed. Installation details are outside the scope of this document.
 
-This package also assumes you if you are accessing the resulting database using a `sqlite3` binary or language-specific SQLite3 library (other than this package) that the [JSON1 extension](https://www.sqlite.org/json1.html) is available and loaded.
+This package also assumes you if you are accessing the resulting database using
+a `sqlite3` binary or language-specific SQLite3 library (other than this
+package) that the [JSON1 extension](https://www.sqlite.org/json1.html) is
+available and loaded. If you are creating an application in Go that uses this
+library make sure to `go build` it (your application) with the `--tags json1`
+flag to tell the underlying [go-sqlite3](https://github.com/mattn/go-sqlite3) package to enable support for the
+JSON1 extension. For example:
+
+```
+$> go build --tags json1 -o bin/wof-sqlite-index-geojson cmd/wof-sqlite-index-geojson.go
+```
 
 ## Custom tables
 
@@ -123,3 +133,4 @@ datasets where the extra cost doesn't matter.
 * https://www.sqlite.org/json1.html
 * https://www.gaia-gis.it/fossil/libspatialite/index
 * https://github.com/whosonfirst/go-whosonfirst-sqlite
+* https://github.com/whosonfirst/go-whosonfirst-geojson-v2

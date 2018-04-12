@@ -3,9 +3,9 @@ package http
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/whosonfirst/go-whosonfirst-sqlite-geojson/query"
+	"github.com/whosonfirst/go-whosonfirst-spatialite-geojson/query"
 	"github.com/whosonfirst/go-whosonfirst-sqlite/database"
-	"log"
+	_ "log"
 	gohttp "net/http"
 )
 
@@ -34,14 +34,14 @@ func PointInPolygonHandler(db *database.SQLiteDatabase) (gohttp.Handler, error) 
 
 		if err != nil {
 			gohttp.Error(rsp, err.Error(), gohttp.StatusBadRequest)
-			return		
+			return
 		}
 
 		if filters != nil {
 
-			for _, f := range filters.Filters {			
+			for _, f := range filters.Filters {
 				q = fmt.Sprintf("%s AND %s", q, f)
-			}			
+			}
 
 			for _, a := range filters.Args {
 				args = append(args, a)
@@ -54,8 +54,6 @@ func PointInPolygonHandler(db *database.SQLiteDatabase) (gohttp.Handler, error) 
 			gohttp.Error(rsp, err.Error(), gohttp.StatusInternalServerError)
 			return
 		}
-
-		log.Println(q, args)
 
 		fc, err := query.QueryToFeatureCollection(conn, q, args...)
 

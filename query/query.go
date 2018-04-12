@@ -3,7 +3,7 @@ package query
 import (
 	"database/sql"
 	"encoding/json"
-	"github.com/whosonfirst/go-whosonfirst-sqlite-geojson"
+	"github.com/whosonfirst/go-whosonfirst-spatialite-geojson"
 )
 
 func QueryToFeatureCollection(db *sql.DB, q string, args ...interface{}) (*geojson.FeatureCollection, error) {

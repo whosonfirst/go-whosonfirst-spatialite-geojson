@@ -10,8 +10,8 @@ import (
 	"github.com/twpayne/go-geom/encoding/wkt"
 	wof_geojson "github.com/whosonfirst/go-whosonfirst-geojson-v2"
 	wof_geom "github.com/whosonfirst/go-whosonfirst-geojson-v2/properties/geometry"
+	"github.com/whosonfirst/go-whosonfirst-spatialite-geojson"
 	"github.com/whosonfirst/go-whosonfirst-sqlite"
-	"github.com/whosonfirst/go-whosonfirst-sqlite-geojson"
 	"github.com/whosonfirst/go-whosonfirst-sqlite/utils"
 	_ "log"
 )

@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/whosonfirst/go-whosonfirst-sqlite-geojson/http"
+	"github.com/whosonfirst/go-whosonfirst-spatialite-geojson/http"
 	"github.com/whosonfirst/go-whosonfirst-sqlite/database"
 	"log"
 	gohttp "net/http"
@@ -30,13 +30,13 @@ func main() {
 		log.Fatal(err)
 	}
 
- 	nearby_handler, err := http.NearbyHandler(db)
+	nearby_handler, err := http.NearbyHandler(db)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
- 	pip_handler, err := http.PointInPolygonHandler(db)
+	pip_handler, err := http.PointInPolygonHandler(db)
 
 	if err != nil {
 		log.Fatal(err)

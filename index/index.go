@@ -8,7 +8,7 @@ import (
 	wof_index "github.com/whosonfirst/go-whosonfirst-index"
 	wof_utils "github.com/whosonfirst/go-whosonfirst-index/utils"
 	"github.com/whosonfirst/go-whosonfirst-sqlite"
-	sql_index "github.com/whosonfirst/go-whosonfirst-sqlite/index"
+	sql_index "github.com/whosonfirst/go-whosonfirst-sqlite-index"
 	"github.com/whosonfirst/warning"
 	"io"
 	"log"

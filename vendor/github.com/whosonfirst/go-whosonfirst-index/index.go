@@ -11,6 +11,8 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-log"
 	"github.com/whosonfirst/go-whosonfirst-sqlite/database"
 	"github.com/whosonfirst/go-whosonfirst-sqlite/utils"
+	"gopkg.in/src-d/go-git.v4"
+	"gopkg.in/src-d/go-git.v4/plumbing/protocol/packp/sideband"
 	"io"
 	"io/ioutil"
 	// golog "log"
@@ -38,9 +40,23 @@ type Indexer struct {
 	count   int64
 }
 
+// used by the IndexGit stuff
+// https://godoc.org/gopkg.in/src-d/go-git.v4/plumbing/protocol/packp/sideband#Progress
+
+type WOFLoggerProgress struct {
+	sideband.Progress
+	logger *log.WOFLogger
+}
+
+func (p *WOFLoggerProgress) Write(msg []byte) (int, error) {
+	p.logger.Status(string(msg))
+	return -1, nil
+}
+
 func Modes() []string {
 
 	return []string{
+		"git",
 		"directory",
 		"feature",
 		"feature-collection",
@@ -126,7 +142,11 @@ func (i *Indexer) IndexPath(path string, args ...interface{}) error {
 
 	i.Logger.Debug("index %s in %s mode", path, i.Mode)
 
-	if i.Mode == "directory" {
+	if i.Mode == "git" {
+
+		return i.IndexGit(path, args...)
+
+	} else if i.Mode == "directory" {
 
 		return i.IndexDirectory(path, args...)
 
@@ -202,15 +222,7 @@ func (i *Indexer) IndexPath(path string, args ...interface{}) error {
 			return err
 		}
 
-		data := filepath.Join(abs_path, "data")
-
-		_, err = os.Stat(data)
-
-		if err != nil {
-			return err
-		}
-
-		return i.IndexDirectory(data, args...)
+		return i.IndexRepo(abs_path, args...)
 
 	} else if i.Mode == "sqlite" {
 
@@ -227,6 +239,53 @@ func (i *Indexer) IndexPath(path string, args ...interface{}) error {
 		return errors.New("Invalid indexer")
 	}
 
+}
+
+func (i *Indexer) IndexGit(path string, args ...interface{}) error {
+
+	repo_name := filepath.Base(path)
+
+	tempdir, err := ioutil.TempDir("", repo_name)
+
+	if err != nil {
+		return err
+	}
+
+	defer os.RemoveAll(tempdir)
+
+	pr := &WOFLoggerProgress{
+		logger: i.Logger,
+	}
+
+	// something something something auth-y bits
+	// https://godoc.org/gopkg.in/src-d/go-git.v4#CloneOptions
+
+	opts := &git.CloneOptions{
+		URL:      path,
+		Depth:    1,
+		Progress: pr,
+	}
+
+	_, err = git.PlainClone(tempdir, false, opts)
+
+	if err != nil {
+		return err
+	}
+
+	return i.IndexDirectory(tempdir, args...)
+}
+
+func (i *Indexer) IndexRepo(abs_path string, args ...interface{}) error {
+
+	data := filepath.Join(abs_path, "data")
+
+	_, err := os.Stat(data)
+
+	if err != nil {
+		return err
+	}
+
+	return i.IndexDirectory(data, args...)
 }
 
 func (i *Indexer) IndexFile(path string, args ...interface{}) error {
@@ -495,7 +554,7 @@ func (i *Indexer) IndexSQLiteDB(path string, args ...interface{}) error {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	cpus := runtime.NumCPU() * 100	// configurable? (20171222/thisisaaronland)
+	cpus := runtime.NumCPU() * 100 // configurable? (20171222/thisisaaronland)
 	throttle_ch := make(chan bool, cpus)
 
 	for i := 0; i < cpus; i++ {

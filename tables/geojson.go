@@ -150,6 +150,7 @@ func (t *GeoJSONTable) IndexFeature(db sqlite.Database, f wof_geojson.Feature) e
 	_, err = stmt.Exec(str_id, str_props)
 
 	if err != nil {
+		tx.Rollback()
 		return err
 	}
 

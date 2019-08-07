@@ -126,6 +126,33 @@ func PolygonsForGeometry(g *geojson.Geometry) ([]geojson.Polygon, error) {
 
 	switch t.String() {
 
+	case "LineString":
+
+		multi_coords := make([]geom.Coord, len(coords))
+
+		for i, c := range coords {
+
+			pt := c.Array()
+
+			lat := pt[1].Float()
+			lon := pt[0].Float()
+
+			coord, _ := utils.NewCoordinateFromLatLons(lat, lon)
+			multi_coords[i] = coord
+		}
+
+		exterior, err := utils.NewPolygonFromCoords(multi_coords)
+
+		if err != nil {
+			return nil, err
+		}
+
+		polygon := Polygon{
+			Exterior: exterior,
+		}
+
+		polys = []geojson.Polygon{polygon}
+
 	case "Polygon":
 
 		// c === rings (below)
@@ -149,7 +176,6 @@ func PolygonsForGeometry(g *geojson.Geometry) ([]geojson.Polygon, error) {
 			}
 
 			polys = append(polys, polygon)
-
 		}
 
 	case "Point":
@@ -178,7 +204,35 @@ func PolygonsForGeometry(g *geojson.Geometry) ([]geojson.Polygon, error) {
 			Interior: interior,
 		}
 
-		return []geojson.Polygon{polygon}, nil
+		polys = []geojson.Polygon{polygon}
+		return polys, nil
+
+	case "MultiPoint":
+
+		multi_coords := make([]geom.Coord, len(coords))
+
+		for i, c := range coords {
+
+			pt := c.Array()
+
+			lat := pt[1].Float()
+			lon := pt[0].Float()
+
+			coord, _ := utils.NewCoordinateFromLatLons(lat, lon)
+			multi_coords[i] = coord
+		}
+
+		exterior, err := utils.NewPolygonFromCoords(multi_coords)
+
+		if err != nil {
+			return nil, err
+		}
+
+		polygon := Polygon{
+			Exterior: exterior,
+		}
+
+		polys = []geojson.Polygon{polygon}
 
 	default:
 

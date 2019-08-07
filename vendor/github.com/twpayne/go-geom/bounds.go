@@ -1,8 +1,6 @@
 package geom
 
-import (
-	"math"
-)
+import "math"
 
 // A Bounds represents a multi-dimensional bounding box.
 type Bounds struct {
@@ -41,6 +39,9 @@ func (b *Bounds) Extend(g T) *Bounds {
 
 // IsEmpty returns true if b is empty.
 func (b *Bounds) IsEmpty() bool {
+	if b.layout == NoLayout {
+		return true
+	}
 	for i, stride := 0, b.layout.Stride(); i < stride; i++ {
 		if b.max[i] < b.min[i] {
 			return true
@@ -74,9 +75,28 @@ func (b *Bounds) Overlaps(layout Layout, b2 *Bounds) bool {
 	return true
 }
 
+// Polygon returns b as a two-dimensional Polygon.
+func (b *Bounds) Polygon() *Polygon {
+	if b.IsEmpty() {
+		return NewPolygonFlat(XY, nil, nil)
+	}
+	x1, y1 := b.min[0], b.min[1]
+	x2, y2 := b.max[0], b.max[1]
+	flatCoords := []float64{
+		x1, y1,
+		x1, y2,
+		x2, y2,
+		x2, y1,
+		x1, y1,
+	}
+	return NewPolygonFlat(XY, flatCoords, []int{len(flatCoords)})
+}
+
 // Set sets the minimum and maximum values. args must be an even number of
 // values: the first half are the minimum values for each dimension and the
-// second half are the maximum values for each dimension.
+// second half are the maximum values for each dimension. If necessary, the
+// layout of b will be extended to cover all the supplied dimensions implied by
+// args.
 func (b *Bounds) Set(args ...float64) *Bounds {
 	if len(args)&1 != 0 {
 		panic("geom: even number of arguments required")
@@ -100,7 +120,8 @@ func (b *Bounds) SetCoords(min, max Coord) *Bounds {
 	return b
 }
 
-// OverlapsPoint determines if the bounding box overlaps the point (point is within or on the border of the bounds)
+// OverlapsPoint determines if the bounding box overlaps the point (point is
+// within or on the border of the bounds).
 func (b *Bounds) OverlapsPoint(layout Layout, point Coord) bool {
 	for i, stride := 0, layout.Stride(); i < stride; i++ {
 		if b.min[i] > point[i] || b.max[i] < point[i] {

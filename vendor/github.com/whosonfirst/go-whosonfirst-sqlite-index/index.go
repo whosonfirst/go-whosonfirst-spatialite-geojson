@@ -28,7 +28,7 @@ func NewSQLiteIndexer(db sqlite.Database, tables []sqlite.Table, callback SQLite
 
 	logger := log.SimpleWOFLogger()
 
-	cb := func(fh io.Reader, ctx context.Context, args ...interface{}) error {
+	cb := func(ctx context.Context, fh io.Reader, args ...interface{}) error {
 
 		path, err := wof_index.PathForContext(ctx)
 

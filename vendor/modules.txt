@@ -1,30 +1,14 @@
-# github.com/d4l3k/messagediff v1.2.1
-github.com/d4l3k/messagediff
-# github.com/davecgh/go-spew v1.1.1
-github.com/davecgh/go-spew/spew
 # github.com/hashicorp/errwrap v1.0.0
 github.com/hashicorp/errwrap
 # github.com/hashicorp/go-multierror v1.0.0
 github.com/hashicorp/go-multierror
-# github.com/lib/pq v1.0.0
-github.com/lib/pq
-github.com/lib/pq/oid
 # github.com/mattn/go-sqlite3 v2.0.2+incompatible
 github.com/mattn/go-sqlite3
 # github.com/mmcloughlin/geohash v0.9.0
 github.com/mmcloughlin/geohash
-# github.com/pkg/errors v0.8.1
-github.com/pkg/errors
-# github.com/pmezard/go-difflib v1.0.0
-github.com/pmezard/go-difflib/difflib
-# github.com/shaxbee/go-spatialite v0.0.0-20180425212100-9b4c81899e0e
-github.com/shaxbee/go-spatialite/wkb
 # github.com/skelterjohn/geom v0.0.0-20180103142417-96f3e8a219c5
 github.com/skelterjohn/geom
-# github.com/stretchr/testify v1.3.0
-github.com/stretchr/testify/assert
-github.com/stretchr/testify/require
-# github.com/tidwall/gjson v1.4.0
+# github.com/tidwall/gjson v1.3.6
 github.com/tidwall/gjson
 # github.com/tidwall/match v1.0.1
 github.com/tidwall/match
@@ -32,38 +16,12 @@ github.com/tidwall/match
 github.com/tidwall/pretty
 # github.com/twpayne/go-geom v1.0.5
 github.com/twpayne/go-geom
-github.com/twpayne/go-geom/xy/orientation
-github.com/twpayne/go-geom/encoding/wkbcommon
-github.com/twpayne/go-geom/encoding/ewkb
-github.com/twpayne/go-geom/encoding/igc
-github.com/twpayne/go-geom/encoding/wkb
-github.com/twpayne/go-geom/bigxy
-github.com/twpayne/go-geom/sorting
-github.com/twpayne/go-geom/xy/internal
-github.com/twpayne/go-geom/xy/internal/lineintersector
-github.com/twpayne/go-geom/xy/internal/centralendpoint
-github.com/twpayne/go-geom/xy/internal/hcoords
-github.com/twpayne/go-geom/xy/lineintersection
-github.com/twpayne/go-geom/xy
 github.com/twpayne/go-geom/encoding/geojson
 github.com/twpayne/go-geom/encoding/wkt
-github.com/twpayne/go-geom/internal/geomtest
-github.com/twpayne/go-geom/internal/testdata
-github.com/twpayne/go-geom/transform
-github.com/twpayne/go-geom/xy/internal/raycrossing
-github.com/twpayne/go-geom/xy/location
-github.com/twpayne/go-geom/xyz
-github.com/twpayne/go-geom/xy/internal/robustdeterminate
-# github.com/twpayne/go-kml v1.2.0
-github.com/twpayne/go-kml
 # github.com/whosonfirst/go-sanitize v0.1.0
 github.com/whosonfirst/go-sanitize
 # github.com/whosonfirst/go-spatialite v0.1.0
 github.com/whosonfirst/go-spatialite
-# github.com/whosonfirst/go-whosonfirst-crawl v0.2.0
-github.com/whosonfirst/go-whosonfirst-crawl
-# github.com/whosonfirst/go-whosonfirst-csv v0.1.0
-github.com/whosonfirst/go-whosonfirst-csv
 # github.com/whosonfirst/go-whosonfirst-flags v0.1.0
 github.com/whosonfirst/go-whosonfirst-flags
 github.com/whosonfirst/go-whosonfirst-flags/existential
@@ -71,9 +29,9 @@ github.com/whosonfirst/go-whosonfirst-flags/existential
 github.com/whosonfirst/go-whosonfirst-geojson-v2
 github.com/whosonfirst/go-whosonfirst-geojson-v2/feature
 github.com/whosonfirst/go-whosonfirst-geojson-v2/properties/geometry
+github.com/whosonfirst/go-whosonfirst-geojson-v2/geometry
 github.com/whosonfirst/go-whosonfirst-geojson-v2/properties/whosonfirst
 github.com/whosonfirst/go-whosonfirst-geojson-v2/utils
-github.com/whosonfirst/go-whosonfirst-geojson-v2/geometry
 # github.com/whosonfirst/go-whosonfirst-hash v0.1.0
 github.com/whosonfirst/go-whosonfirst-hash
 # github.com/whosonfirst/go-whosonfirst-index v0.2.3
@@ -93,12 +51,9 @@ github.com/whosonfirst/go-whosonfirst-spr
 github.com/whosonfirst/go-whosonfirst-sqlite
 github.com/whosonfirst/go-whosonfirst-sqlite/database
 github.com/whosonfirst/go-whosonfirst-sqlite/utils
-github.com/whosonfirst/go-whosonfirst-sqlite/tables
 # github.com/whosonfirst/go-whosonfirst-sqlite-index v0.1.1
 github.com/whosonfirst/go-whosonfirst-sqlite-index
 # github.com/whosonfirst/go-whosonfirst-uri v0.1.0
 github.com/whosonfirst/go-whosonfirst-uri
-# github.com/whosonfirst/walk v0.0.0-20160803014805-c0a349674b73
-github.com/whosonfirst/walk
 # github.com/whosonfirst/warning v0.1.0
 github.com/whosonfirst/warning

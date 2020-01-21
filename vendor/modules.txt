@@ -20,7 +20,7 @@ github.com/twpayne/go-geom/encoding/geojson
 github.com/twpayne/go-geom/encoding/wkt
 # github.com/whosonfirst/go-sanitize v0.1.0
 github.com/whosonfirst/go-sanitize
-# github.com/whosonfirst/go-spatialite v0.1.0
+# github.com/whosonfirst/go-spatialite v0.1.1
 github.com/whosonfirst/go-spatialite
 # github.com/whosonfirst/go-whosonfirst-flags v0.1.0
 github.com/whosonfirst/go-whosonfirst-flags
